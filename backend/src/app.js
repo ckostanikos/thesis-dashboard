@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 
 //routes
 import authRoutes from "./routes/auth.routes.js";
+import meRoutes from "./routes/me.routes.js";
 
 connectDB();
 
@@ -18,5 +19,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/me", meRoutes);
 
 export default app;
