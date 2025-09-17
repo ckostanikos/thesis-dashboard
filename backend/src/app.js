@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { connectDB } from "./config/db.js";
-import authRoutes from "./routes/auth.routes.js";
 
 //routes
 import authRoutes from "./routes/auth.routes.js";
