@@ -10,6 +10,7 @@ import meRoutes from "./routes/me.routes.js";
 import kpiRoutes from "./routes/kpi.routes.js";
 import teamRoutes from "./routes/team.routes.js";
 import sysadminRoutes from "./routes/sysadmin.routes.js";
+import metaRoutes from "./routes/meta.routes.js";
 
 connectDB();
 
@@ -27,5 +28,6 @@ app.use("/api/me", meRoutes);
 app.use("/api/kpis", kpiRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/sysadmin", sysadminRoutes);
+app.use("/api/meta", metaRoutes);
 app.use(errorHandler);
 export default app;
