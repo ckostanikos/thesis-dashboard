@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { connectDB } from "./config/db.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 //routes
 import authRoutes from "./routes/auth.routes.js";
@@ -24,5 +25,5 @@ app.use("/api/auth", authRoutes);
 app.use("/api/me", meRoutes);
 app.use("/api/kpis", kpiRoutes);
 app.use("/api/teams", teamRoutes);
-
+app.use(errorHandler);
 export default app;
