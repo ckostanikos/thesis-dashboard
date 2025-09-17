@@ -30,6 +30,13 @@ async function run() {
   // 3) Users (your exact names/emails/roles)
   const users = await User.insertMany([
     {
+      name: "System Admin",
+      email: "sysadmin@org.com",
+      password: await bcrypt.hash("password", 10),
+      role: "sysadmin",
+      teamId: null,
+    },
+    {
       name: "Christos Kostanikos",
       email: "admin@org.com",
       password: await bcrypt.hash("password", 10),
