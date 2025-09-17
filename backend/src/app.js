@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import meRoutes from "./routes/me.routes.js";
 import kpiRoutes from "./routes/kpi.routes.js";
+import teamRoutes from "./routes/team.routes.js";
 
 connectDB();
 
@@ -22,5 +23,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/me", meRoutes);
 app.use("/api/kpis", kpiRoutes);
+app.use("/api/teams", teamRoutes);
 
 export default app;
