@@ -11,8 +11,60 @@ function canManageUser(actor, targetUser) {
 }
 
 /**
- * Assigns (or reassigns) a course to a user.
- * If an enrollment already exists, doesn't duplicate; it keeps it (progress stays as-is unless it want to reset).
+ GET /api/enrollments/by-user/:id
+ - sysadmin/admin: can view any user
+ - manager: can view users in their team
+ - employee: can only view themselves
+ */
+export async function getEnrollmentsByUser(req, res) {
+  const targetUserId = req.params.id;
+
+  // Fetch target user (to perform RBAC checks)
+  const targetUser = await User.findById(targetUserId).lean();
+  if (!targetUser) return res.status(404).json({ message: "User not found" });
+
+  // RBAC
+  const actor = req.user;
+  const sameUser = String(actor.id) === String(targetUserId);
+
+  const actorIsEmployee = actor.role === "employee";
+  if (actorIsEmployee && !sameUser) {
+    return res
+      .status(403)
+      .json({ message: "Employees can only view their own enrollments" });
+  }
+
+  if (!sameUser && !canManageUser(actor, targetUser)) {
+    return res
+      .status(403)
+      .json({ message: "Forbidden: cannot view this user's enrollments" });
+  }
+
+  // Query enrollments + join course details
+  const enrollments = await Enrollment.find({ userId: targetUserId }).lean();
+  const courseIds = enrollments.map((e) => e.courseId);
+  const courses = await Course.find({ _id: { $in: courseIds } }).lean();
+
+  const data = enrollments.map((e) => ({
+    ...e,
+    course: courses.find((c) => String(c._id) === String(e.courseId)) || null,
+  }));
+
+  res.json({
+    user: {
+      _id: targetUser._id,
+      name: targetUser.name,
+      email: targetUser.email,
+      role: targetUser.role,
+      teamId: targetUser.teamId,
+    },
+    enrollments: data,
+  });
+}
+
+/**
+ Assigns (or reassigns) a course to a user.
+ If an enrollment already exists, doesn't duplicate; it keeps it (progress stays as-is unless it want to reset).
  */
 export async function assignCourse(req, res) {
   const { userId, courseId } = req.body || {};

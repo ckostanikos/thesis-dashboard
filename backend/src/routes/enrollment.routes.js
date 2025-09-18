@@ -1,7 +1,10 @@
 import { Router } from "express";
 import requireAuth from "../middleware/auth.js";
 import { requireRole } from "../middleware/roles.js";
-import { assignCourse } from "../controllers/enrollment.controller.js";
+import {
+  assignCourse,
+  getEnrollmentsByUser,
+} from "../controllers/enrollment.controller.js";
 
 const r = Router();
 
@@ -12,5 +15,7 @@ r.post(
   requireRole("manager", "admin", "sysadmin"),
   assignCourse
 );
+
+r.get("/by-user/:id", requireAuth, getEnrollmentsByUser);
 
 export default r;
