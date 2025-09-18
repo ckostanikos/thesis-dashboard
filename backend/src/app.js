@@ -11,6 +11,8 @@ import kpiRoutes from "./routes/kpi.routes.js";
 import teamRoutes from "./routes/team.routes.js";
 import sysadminRoutes from "./routes/sysadmin.routes.js";
 import metaRoutes from "./routes/meta.routes.js";
+import courseRoutes from "./routes/course.routes.js";
+import enrollmentRoutes from "./routes/enrollment.routes.js";
 
 connectDB();
 
@@ -29,5 +31,7 @@ app.use("/api/kpis", kpiRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/sysadmin", sysadminRoutes);
 app.use("/api/meta", metaRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
 app.use(errorHandler);
 export default app;
