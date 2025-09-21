@@ -26,9 +26,9 @@ export default function Login() {
       const { token, user } = await login(email, password);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      if (user.role === "admin") nav("/org");
+      if (user.role === "admin") nav("/company");
       else if (user.role === "manager") nav(`/team/${user.teamId}`);
-      else nav("/me");
+      else nav("/my-courses");
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed");
     }

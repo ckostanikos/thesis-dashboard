@@ -6,8 +6,8 @@ import { ChakraProvider, createSystem, defaultConfig } from "@chakra-ui/react";
 
 import App from "./App";
 import Login from "./pages/Login";
-import Me from "./pages/Me";
-import Org from "./pages/Org";
+import MyCourses from "./pages/MyCourses";
+import Company from "./pages/Company";
 import Team from "./pages/Team";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -23,10 +23,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "me", element: <Me /> },
-      { path: "org", element: <Org /> },
+      { path: "my-courses", element: <MyCourses /> },
+      { path: "company", element: <Company /> },
       { path: "team/:id", element: <Team /> },
-      { index: true, element: <Me /> },
+      { index: true, element: <MyCourses /> },
     ],
   },
 ]);

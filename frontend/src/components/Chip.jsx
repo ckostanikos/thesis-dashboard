@@ -1,5 +1,4 @@
 import { Box } from "@chakra-ui/react";
-/** Tiny chip that looks like the Figma tags */
 export default function Chip({ children }) {
   return (
     <Box

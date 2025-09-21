@@ -38,20 +38,20 @@ const roleLinks = (role, teamId) => {
   switch ((role || "employee").toLowerCase()) {
     case "admin":
       return [
-        { to: "/org", label: "Dashboard" },
+        { to: "/company", label: "Dashboard" },
         { to: "/library", label: "Library" },
         { to: "/users", label: "Users" },
       ];
     case "manager":
       return [
         { to: teamId ? `/team/${teamId}` : "/manager", label: "Dashboard" },
-        { to: "/me", label: "My Learning" },
+        { to: "/my-courses", label: "My Learning" },
         { to: "/library", label: "Library" },
         { to: "/profile", label: "Profile" },
       ];
     default: // employee
       return [
-        { to: "/me", label: "My Learning" },
+        { to: "/my-courses", label: "My Learning" },
         { to: "/library", label: "Library" },
         { to: "/profile", label: "Profile" },
       ];
