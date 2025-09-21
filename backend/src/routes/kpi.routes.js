@@ -6,7 +6,7 @@ import { getOrgKpis, getTeamKpis } from "../controllers/kpi.controller.js";
 const r = Router();
 
 // GET /api/kpis/org  (protected)
-r.get("/org", requireAuth, requireRole("sysadmin", "admin"), getOrgKpis);
+r.get("/org", requireAuth, requireRole("admin"), getOrgKpis);
 r.get("/team/:id", requireAuth, requireManagerOfTeam(), getTeamKpis);
 
 export default r;

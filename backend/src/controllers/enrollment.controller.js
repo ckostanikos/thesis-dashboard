@@ -4,7 +4,7 @@ import Course from "../models/course.model.js";
 
 // Helper to check manager can touch target user
 function canManageUser(actor, targetUser) {
-  if (actor.role === "sysadmin" || actor.role === "admin") return true;
+  if (actor.role === "admin") return true;
   if (actor.role !== "manager") return false;
   if (!actor.teamId) return false;
   return String(actor.teamId) === String(targetUser.teamId);
@@ -12,7 +12,7 @@ function canManageUser(actor, targetUser) {
 
 /**
  GET /api/enrollments/by-user/:id
- - sysadmin/admin: can view any user
+ - admin: can view any user
  - manager: can view users in their team
  - employee: can only view themselves
  */
@@ -90,7 +90,7 @@ export async function assignCourse(req, res) {
       .json({ message: "Only employees can be assigned courses" });
   }
 
-  // RBAC: sysadmin/admin unrestricted; manager restricted to own team
+  // RBAC: admin unrestricted; manager restricted to own team
   if (!canManageUser(req.user, targetUser)) {
     return res
       .status(403)

@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true }, // store bcrypt hash
     role: {
       type: String,
-      enum: ["sysadmin", "admin", "manager", "employee"],
+      enum: ["admin", "manager", "employee"],
       default: "employee",
       index: true,
     },

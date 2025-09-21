@@ -8,7 +8,7 @@ const r = Router();
 // anyone logged in can list courses (adjust if you want)
 r.get("/", requireAuth, listCourses);
 
-// sysadmin only can create courses
-r.post("/", requireAuth, requireRole("sysadmin"), createCourse);
+// admin only can create courses
+r.post("/", requireAuth, requireRole("admin"), createCourse);
 
 export default r;

@@ -9,7 +9,7 @@ import {
 } from "../controllers/user.controller.js";
 
 const r = Router();
-r.use(requireAuth, requireRole("sysadmin")); // all routes below require sysadmin
+r.use(requireAuth, requireRole("admin")); // all routes below require admin
 
 r.get("/users", listUsers); // list all users
 r.post("/users", createUser); // create (hashes password)

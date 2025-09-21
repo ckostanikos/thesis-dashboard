@@ -5,7 +5,7 @@ import { getRoles } from "../controllers/meta.controller.js";
 
 const r = Router();
 
-// Only sysadmin needs this for user-management UI.
-r.get("/roles", requireAuth, requireRole("sysadmin"), getRoles);
+// Only admin needs this for user-management UI.
+r.get("/roles", requireAuth, requireRole("admin"), getRoles);
 
 export default r;

@@ -8,13 +8,8 @@ import {
 
 const r = Router();
 
-// Only managers, admins, sysadmins can assign (employees cannot)
-r.post(
-  "/assign",
-  requireAuth,
-  requireRole("manager", "admin", "sysadmin"),
-  assignCourse
-);
+// Only managers and admins can assign (employees cannot)
+r.post("/assign", requireAuth, requireRole("manager", "admin"), assignCourse);
 
 r.get("/by-user/:id", requireAuth, getEnrollmentsByUser);
 
