@@ -30,7 +30,9 @@ export default function CourseCard({ enrollment }) {
 
   const plannedMin = enrollment?.course?.plannedMinutes;
   const minutesSpent = enrollment?.minutesSpent;
-  const dueDate = enrollment?.dueDate ? new Date(enrollment.dueDate) : null;
+  const dueDate = enrollment?.course?.dueDate
+    ? new Date(enrollment.course.dueDate)
+    : null;
 
   let cta = "Start";
   if (progress > 0 && progress < 100) cta = "Resume";

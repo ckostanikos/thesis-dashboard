@@ -6,7 +6,6 @@ const enrollmentSchema = new mongoose.Schema(
     courseId: { type: mongoose.Types.ObjectId, ref: "Course", required: true },
     progress: { type: Number, min: 0, max: 100, default: 0 }, // %
     completedAt: { type: Date, default: null },
-    dueDate: { type: Date, default: null },
   },
   { timestamps: true }
 );

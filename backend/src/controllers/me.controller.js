@@ -15,7 +15,9 @@ export async function getMe(req, res) {
 
     // 3) Attach course details
     const courseIds = enrollments.map((e) => e.courseId);
-    const courses = await Course.find({ _id: { $in: courseIds } }).lean();
+    const courses = await Course.find({ _id: { $in: courseIds } })
+      .select("title category hours imageUrl dueDate")
+      .lean();
 
     const enrollmentsWithCourse = enrollments.map((e) => {
       const course = courses.find(
