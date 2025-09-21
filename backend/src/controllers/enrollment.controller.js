@@ -124,3 +124,48 @@ export async function assignCourse(req, res) {
     throw err;
   }
 }
+
+export async function enrollSelf(req, res) {
+  const actor = req.user; // { id, role, teamId, ... }
+  if (!actor) return res.status(401).json({ message: "Unauthorized" });
+
+  // employees and managers can self-enroll
+  if (!["employee", "manager"].includes(actor.role)) {
+    return res
+      .status(403)
+      .json({ message: "Only employees or managers can self-enroll" });
+  }
+
+  const { courseId } = req.body || {};
+  if (!courseId)
+    return res.status(400).json({ message: "courseId is required" });
+
+  const course = await Course.findById(courseId).lean();
+  if (!course) return res.status(404).json({ message: "Course not found" });
+
+  // no duplicates
+  const existing = await Enrollment.findOne({
+    userId: actor.id,
+    courseId,
+  }).lean();
+  if (existing) {
+    return res
+      .status(409)
+      .json({ message: "Already enrolled", enrollment: existing });
+  }
+
+  try {
+    const enrollment = await Enrollment.create({
+      userId: actor.id,
+      courseId,
+      progress: 0,
+      completedAt: null,
+    });
+    return res.status(201).json({ message: "Enrolled", enrollment });
+  } catch (err) {
+    if (err?.code === 11000) {
+      return res.status(409).json({ message: "Already enrolled (duplicate)" });
+    }
+    throw err;
+  }
+}
