@@ -46,7 +46,6 @@ export default function Me() {
 
   return (
     <Container maxW="6xl" px={0}>
-      {/* Page header (Figma: "My Learning Page") */}
       <Box
         bg="#F7FAFC"
         borderBottom="1px solid"
@@ -55,7 +54,7 @@ export default function Me() {
         py={3}
         mb={6}
       >
-        <Heading size="sm">My Learning Page</Heading>
+        <Heading size="sm">Enrolled Courses</Heading>
       </Box>
 
       <Stack spacing={6}>
