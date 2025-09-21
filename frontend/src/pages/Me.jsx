@@ -1,38 +1,85 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchMe } from "../api/me";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Stack,
+  Flex,
+  Spinner,
+} from "@chakra-ui/react";
+import CourseCard from "../components/CourseCard";
 
 export default function Me() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["me"],
     queryFn: fetchMe,
   });
-  if (isLoading) return <p>Loading…</p>;
-  if (error) return <p className="text-red-600">Error: {error.message}</p>;
 
-  const { user, enrollments } = data;
+  if (isLoading) {
+    return (
+      <Flex py={8} justify="center">
+        <Spinner size="lg" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        my={4}
+        p={3}
+        border="1px solid"
+        borderColor="red.200"
+        bg="red.50"
+        color="red.800"
+        borderRadius="md"
+        fontSize="sm"
+      >
+        Error: {error.message}
+      </Box>
+    );
+  }
+
+  const { user, enrollments = [] } = data ?? {};
+
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4">Welcome, {user.name}</h2>
-      <h3 className="font-medium mb-2">My Courses</h3>
-      <ul className="space-y-2">
+    <Container maxW="6xl" px={0}>
+      {/* Page header (Figma: "My Learning Page") */}
+      <Box
+        bg="#F7FAFC"
+        borderBottom="1px solid"
+        borderColor="gray.200"
+        px={4}
+        py={3}
+        mb={6}
+      >
+        <Heading size="sm">My Learning Page</Heading>
+      </Box>
+
+      <Stack spacing={6}>
         {enrollments.map((e) => (
-          <li key={e._id} className="bg-white rounded-lg p-3 border">
-            <div className="font-medium">{e?.course?.title}</div>
-            <div className="text-sm text-gray-600">
-              {e?.course?.category} • {e?.course?.hours}h
-            </div>
-            <div className="mt-1 h-2 bg-gray-200 rounded">
-              <div
-                className="h-2 bg-blue-600 rounded"
-                style={{ width: `${e.progress || 0}%` }}
-              />
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Progress: {e.progress || 0}%
-            </div>
-          </li>
+          <CourseCard key={e._id} enrollment={e} />
         ))}
-      </ul>
-    </div>
+        {enrollments.length === 0 && (
+          <Box
+            p={6}
+            textAlign="center"
+            bg="white"
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="xl"
+          >
+            <Heading size="sm" mb={2}>
+              No courses yet
+            </Heading>
+            <Text color="gray.600">
+              When you enroll, your courses will appear here.
+            </Text>
+          </Box>
+        )}
+      </Stack>
+    </Container>
   );
 }

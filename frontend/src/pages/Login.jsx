@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/auth";
+import {
+  Box,
+  Button,
+  Input,
+  Text,
+  Heading,
+  VStack,
+  Alert,
+  Container,
+  Field, // <-- v3 forms
+} from "@chakra-ui/react";
 
 export default function Login() {
   const [email, setEmail] = useState("admin@org.com");
@@ -24,46 +35,59 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-gray-100 dark:bg-gray-950">
-      <form
-        onSubmit={onSubmit}
-        className="w-full max-w-sm bg-white dark:bg-gray-900 rounded-xl shadow p-6 space-y-4 text-gray-900 dark:text-gray-100"
-      >
-        <h1 className="text-xl font-semibold">Sign in</h1>
-
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-
-        <div>
-          <label className="block text-sm mb-1">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg shadow hover:bg-blue-700"
+    <Box minH="100dvh" bg="gray.100" display="flex" alignItems="center">
+      <Container maxW="sm">
+        <Box
+          as="form"
+          onSubmit={onSubmit}
+          bg="white"
+          borderRadius="xl"
+          boxShadow="sm"
+          p={6}
         >
-          Login
-        </button>
+          <VStack align="stretch" spacing={4}>
+            <Heading size="md">Sign in</Heading>
 
-        <p className="text-xs text-gray-500">
-          Try: admin@org.com / manager@org.com / konstantina@org.com (password)
-        </p>
-      </form>
-    </div>
+            {error && (
+              <Alert.Root status="error" variant="subtle" borderRadius="md">
+                <Alert.Icon />
+                <Alert.Description fontSize="sm">{error}</Alert.Description>
+              </Alert.Root>
+            )}
+
+            <Field.Root>
+              <Field.Label fontSize="sm">Email</Field.Label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                bg="gray.50"
+                borderColor="gray.300"
+              />
+            </Field.Root>
+
+            <Field.Root>
+              <Field.Label fontSize="sm">Password</Field.Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                bg="gray.50"
+                borderColor="gray.300"
+              />
+            </Field.Root>
+
+            <Button type="submit" colorScheme="blue" w="full">
+              Login
+            </Button>
+
+            <Text fontSize="xs" color="gray.500">
+              Try: admin@org.com / manager@org.com / konstantina@org.com
+              (password)
+            </Text>
+          </VStack>
+        </Box>
+      </Container>
+    </Box>
   );
 }

@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { Box, Heading, Text, Stack, Spinner, Flex } from "@chakra-ui/react";
 
 export default function Org() {
   const { data, isLoading, error } = useQuery({
@@ -16,8 +17,30 @@ export default function Org() {
     queryFn: fetchOrgKpis,
   });
 
-  if (isLoading) return <p>Loading…</p>;
-  if (error) return <p className="text-red-600">Error: {error.message}</p>;
+  if (isLoading) {
+    return (
+      <Flex py={8} justify="center">
+        <Spinner size="lg" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        my={4}
+        p={3}
+        border="1px solid"
+        borderColor="red.200"
+        bg="red.50"
+        color="red.800"
+        borderRadius="md"
+        fontSize="sm"
+      >
+        Error: {error.message}
+      </Box>
+    );
+  }
 
   const chartData = data.map((d) => ({
     date: new Date(d.date).toLocaleDateString(),
@@ -26,43 +49,68 @@ export default function Org() {
   }));
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-6">
-      <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+    <Box
+      bg="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="2xl"
+      boxShadow="sm"
+      p={6}
+    >
+      <Heading size="sm" mb={4}>
         Completion & Avg Score
-      </h3>
-      <div style={{ height: 320 }}>
+      </Heading>
+
+      <Box h="320px" mb={4}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="date" stroke="currentColor" />
-            <YAxis stroke="currentColor" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+            <XAxis dataKey="date" stroke="#4B5563" />
+            <YAxis stroke="#4B5563" />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#1f2937",
-                color: "#fff",
-                borderRadius: "0.5rem",
+                backgroundColor: "#F9FAFB",
+                color: "#111827",
+                borderRadius: 8,
+                border: "1px solid #E5E7EB",
               }}
             />
-            <Line type="monotone" dataKey="completion" stroke="#2563eb" />
-            <Line type="monotone" dataKey="score" stroke="#16a34a" />
+            <Line
+              type="monotone"
+              dataKey="completion"
+              stroke="#2563EB"
+              dot={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="score"
+              stroke="#16A34A"
+              dot={false}
+            />
           </LineChart>
         </ResponsiveContainer>
-      </div>
+      </Box>
 
-      {/* Keep list as fallback (optional) */}
-      <ul className="space-y-2">
+      <Stack spacing={2}>
         {data.map((row) => (
-          <li
+          <Box
             key={row._id}
-            className="bg-white rounded-lg p-3 border flex justify-between"
+            bg="#F9FAFB"
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="lg"
+            p={3}
+            color="gray.900"
           >
-            <span>{new Date(row.date).toLocaleDateString()}</span>
-            <span>
-              Completion: {row.completionRate}% • AvgScore: {row.avgScore}
-            </span>
-          </li>
+            <Flex justify="space-between">
+              <Text>{new Date(row.date).toLocaleDateString()}</Text>
+              <Text>
+                Completion: {row.completionRate}% • AvgScore: {row.avgScore}
+              </Text>
+            </Flex>
+          </Box>
         ))}
-      </ul>
-    </div>
+      </Stack>
+    </Box>
   );
 }

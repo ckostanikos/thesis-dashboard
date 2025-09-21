@@ -94,18 +94,21 @@ async function run() {
       courseId: courseReact._id,
       progress: 60,
       completedAt: null,
+      dueDate: new Date("2026-01-30"),
     },
     {
       userId: empAlpha._id,
       courseId: courseMongo._id,
       progress: 20,
       completedAt: null,
+      dueDate: new Date("2025-11-15"),
     },
     {
       userId: empAlpha._id,
       courseId: courseComm._id,
       progress: 100,
       completedAt: new Date("2025-08-20"),
+      dueDate: new Date("2025-12-30"),
     },
 
     // Team Beta employee (Dimitrios)
@@ -114,12 +117,14 @@ async function run() {
       courseId: courseNode._id,
       progress: 40,
       completedAt: null,
+      dueDate: new Date("2025-12-30"),
     },
     {
       userId: empBeta._id,
       courseId: courseSec._id,
       progress: 100,
       completedAt: new Date("2025-07-15"),
+      dueDate: new Date("2025-12-30"),
     },
 
     // Manager (George) also taking some courses

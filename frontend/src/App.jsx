@@ -1,25 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Container,
+  Flex,
+  HStack,
+  Stack,
+  Heading,
+  Button,
+  IconButton,
+  Collapsible,
+  Link as ChakraLink,
+  Text,
+  useDisclosure,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+
+function NavItem({ to, children, onClick }) {
+  return (
+    <ChakraLink
+      as={NavLink}
+      to={to}
+      px={3}
+      py={2}
+      rounded="md"
+      fontSize="sm"
+      _hover={{ bg: "gray.100", color: "gray.900", textDecoration: "none" }}
+      style={({ isActive }) =>
+        isActive
+          ? {
+              background: "#2563EB",
+              color: "white",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+            }
+          : { color: "#4B5563" }
+      }
+      onClick={onClick}
+    >
+      {children}
+    </ChakraLink>
+  );
+}
 
 export default function App() {
-  const [open, setOpen] = useState(false);
-  const [dark, setDark] = useState(
-    () => localStorage.getItem("theme") === "dark"
-  );
   const nav = useNavigate();
   const loc = useLocation();
-
-  // Dark mode toggle (applies class to <html>)
-  useEffect(() => {
-    const root = document.documentElement;
-    if (dark) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [dark]);
+  const { isOpen, onToggle, onClose } = useDisclosure();
+  const isDesktop = useBreakpointValue({ base: false, md: true });
 
   function logout() {
     localStorage.removeItem("token");
@@ -29,119 +56,132 @@ export default function App() {
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setOpen(false);
-  }, [loc.pathname]);
+    onClose();
+  }, [loc.pathname, onClose]);
 
   return (
-    <div className="min-h-dvh bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <Box
+      minH="100dvh"
+      bg="white"
+      color="gray.900"
+      display="flex"
+      flexDirection="column"
+    >
       {/* NAVBAR */}
-      <header className="sticky top-0 z-50 border-b border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-gray-900/60 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="h-14 flex items-center gap-3">
+      <Box
+        as="header"
+        position="sticky"
+        top={0}
+        zIndex={50}
+        borderBottom="1px"
+        borderColor="gray.200"
+        bg="#EDF2F7"
+        sx={{ backdropFilter: "blur(6px)" }}
+      >
+        <Container maxW="6xl" px={4}>
+          <Flex align="center" gap={3} h={14}>
             {/* Brand */}
-            <div className="flex items-center gap-2">
-              <div className="h-7 w-7 grid place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white text-sm font-bold shadow-sm">
+            <HStack spacing={2}>
+              <Box
+                h={7}
+                w={7}
+                display="grid"
+                placeItems="center"
+                rounded="xl"
+                bgGradient="linear(to-br, blue.600, indigo.600)"
+                color="white"
+                fontWeight="bold"
+                fontSize="sm"
+                boxShadow="sm"
+              >
                 TD
-              </div>
-              <span className="font-semibold tracking-tight">
+              </Box>
+              <Heading size="sm" letterSpacing="tight">
                 Thesis Dashboard
-              </span>
-            </div>
+              </Heading>
+            </HStack>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-1 ml-6">
-              <NavItem to="/me">My Dashboard</NavItem>
-              <NavItem to="/org">Org</NavItem>
-              {/* Example team link; replace ID or remove */}
-              {/* <NavItem to="/team/DEFAULT_TEAM_ID">Team</NavItem> */}
-            </nav>
+            {isDesktop && (
+              <HStack spacing={1} ms={6}>
+                <NavItem to="/me">My Dashboard</NavItem>
+                <NavItem to="/org">Org</NavItem>
+                {/* <NavItem to="/team/DEFAULT_TEAM_ID">Team</NavItem> */}
+              </HStack>
+            )}
 
-            {/* Spacer */}
-            <div className="ml-auto flex items-center gap-2">
-              {/* Dark mode toggle */}
-              <button
-                onClick={() => setDark((d) => !d)}
-                className="inline-flex h-9 items-center rounded-lg px-3 text-sm border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-                aria-label="Toggle dark mode"
-                title="Toggle dark mode"
-              >
-                {dark ? "🌙" : "🌞"}
-              </button>
-
-              {/* Logout */}
-              <button
+            {/* Actions */}
+            <HStack spacing={2} ms="auto">
+              <Button
+                size="sm"
+                bg="gray.600"
+                _hover={{ bg: "gray.700" }}
+                color="white"
                 onClick={logout}
-                className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium bg-red-600 text-white hover:opacity-90 shadow-sm"
+                boxShadow="sm"
               >
                 Logout
-              </button>
+              </Button>
 
-              {/* Mobile menu button */}
-              <button
-                className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => setOpen((o) => !o)}
-                aria-label="Toggle menu"
-              >
-                {/* simple hamburger / close */}
-                <span
-                  className={`block h-0.5 w-4 bg-current transition ${
-                    open ? "rotate-45 translate-y-0.5" : ""
-                  }`}
-                />
-                <span
-                  className={`block h-0.5 w-4 bg-current my-1 transition ${
-                    open ? "opacity-0" : ""
-                  }`}
-                />
-                <span
-                  className={`block h-0.5 w-4 bg-current transition ${
-                    open ? "-rotate-45 -translate-y-0.5" : ""
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
+              {!isDesktop && (
+                <IconButton
+                  aria-label="Toggle menu"
+                  variant="outline"
+                  onClick={onToggle}
+                >
+                  {isOpen ? "Close" : "Menu"}
+                </IconButton>
+              )}
+            </HStack>
+          </Flex>
 
-          {/* Mobile dropdown */}
-          {open && (
-            <nav className="md:hidden pb-3">
-              <div className="flex flex-col gap-1">
-                <NavItem to="/me" mobile>
-                  My Dashboard
-                </NavItem>
-                <NavItem to="/org" mobile>
-                  Org
-                </NavItem>
-                {/* <NavItem to="/team/DEFAULT_TEAM_ID" mobile>Team</NavItem> */}
-              </div>
-            </nav>
+          {/* Mobile dropdown (v3 Collapsible) */}
+          {!isDesktop && (
+            <Collapsible.Root open={isOpen}>
+              <Collapsible.Content>
+                <Box pb={3}>
+                  <Stack spacing={1}>
+                    <NavItem to="/me" onClick={onClose}>
+                      My Dashboard
+                    </NavItem>
+                    <NavItem to="/org" onClick={onClose}>
+                      Org
+                    </NavItem>
+                  </Stack>
+                </Box>
+              </Collapsible.Content>
+            </Collapsible.Root>
           )}
-        </div>
-      </header>
+        </Container>
+      </Box>
 
       {/* CONTENT */}
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      <Container maxW="6xl" px={4} py={6} flex="1">
         <Outlet />
-      </main>
-    </div>
-  );
-}
+      </Container>
 
-function NavItem({ to, children, mobile = false }) {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        [
-          "rounded-lg text-sm transition",
-          mobile ? "px-3 py-2" : "px-3 py-1.5",
-          isActive
-            ? "bg-blue-600 text-white shadow-sm"
-            : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800",
-        ].join(" ")
-      }
-    >
-      {children}
-    </NavLink>
+      {/* FOOTER */}
+      <Box
+        mt="auto"
+        py={6}
+        bg="#EDF2F7"
+        borderTop="1px solid"
+        borderColor="gray.200"
+      >
+        <Container maxW="6xl">
+          <Flex
+            align="center"
+            color="gray.700"
+            fontSize="sm"
+            wrap="wrap"
+            gap={3}
+          >
+            <Text fontWeight="bold">Company SkillHub</Text>
+            <Text>dev@helpdesk.com</Text>
+            <Text ms="auto">All Rights Reserved.</Text>
+          </Flex>
+        </Container>
+      </Box>
+    </Box>
   );
 }
