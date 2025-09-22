@@ -6,6 +6,8 @@ const courseSchema = new mongoose.Schema(
     category: { type: String, trim: true, default: "General" },
     hours: { type: Number, min: 0, default: 0 },
     dueDate: { type: Date, required: true },
+    description: { type: String, trim: true, default: "" },
+    imageUrl: { type: String, trim: true, default: "" },
   },
   { timestamps: true }
 );

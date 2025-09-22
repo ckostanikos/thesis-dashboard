@@ -16,6 +16,7 @@ import {
 import { fetchCourses } from "../api/courses";
 import { fetchMe } from "../api/me";
 import { enrollSelf } from "../api/enrollments";
+import CreateCourseModal from "../components/CreateCourseModal";
 
 function fmtHours(h) {
   const n = Number(h) || 0;
@@ -95,6 +96,7 @@ function CourseTile({ course, showPlus, onPlus, isLoading }) {
 export default function Library() {
   const nav = useNavigate();
   const qc = useQueryClient();
+  const [isCreateOpen, setCreateOpen] = useState(false);
 
   // who am I?
   const user = (() => {
@@ -189,130 +191,137 @@ export default function Library() {
   }
 
   return (
-    <Container maxW="6xl" px={0}>
-      {/* toolbar */}
-      <Flex
-        align="center"
-        gap={3}
-        mb={4}
-        wrap="wrap"
-        px={4}
-        py={3}
-        bg="#F7FAFC"
-        borderBottom="1px solid"
-        borderColor="gray.200"
-      >
-        <Heading size="sm" flexShrink={0}>
-          Library
-        </Heading>
-
-        <Input
-          placeholder="Search courses..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          maxW="360px"
-          bg="white"
-          borderColor="gray.300"
-        />
-
-        <Box
-          as="select"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          maxW="220px"
-          bg="white"
-          border="1px solid"
-          borderColor="gray.300"
-          rounded="md"
-          px={3}
-          py={2}
-        >
-          {categories.map((c) => (
-            <option key={c} value={c}>
-              {c === "all" ? "All categories" : c}
-            </option>
-          ))}
-        </Box>
-
-        <Box ml="auto" />
-
-        {(isAdmin || isManager) && (
-          <HStack spacing={2}>
-            {isAdmin && (
-              <Button
-                size="sm"
-                bg="blue.600"
-                _hover={{ bg: "blue.700" }}
-                color="white"
-                onClick={() => nav("/courses/create")}
-              >
-                Create a course
-              </Button>
-            )}
-            <Button
-              size="sm"
-              bg="green.600"
-              _hover={{ bg: "green.700" }}
-              color="white"
-              onClick={() => nav("/enrollments/assign")}
-            >
-              Assign a course
-            </Button>
-            {isAdmin && (
-              <Button
-                size="sm"
-                bg="red.600"
-                _hover={{ bg: "red.700" }}
-                color="white"
-                onClick={() => nav("/courses/delete")}
-              >
-                Delete a course
-              </Button>
-            )}
-          </HStack>
-        )}
-      </Flex>
-
-      {/* tiles */}
-      {filtered.length === 0 ? (
-        <Box
-          p={6}
-          textAlign="center"
-          bg="white"
-          border="1px solid"
-          borderColor="gray.200"
-          borderRadius="xl"
-          mx={4}
-        >
-          <Heading size="sm" mb={2}>
-            No courses found
-          </Heading>
-          <Text color="gray.600">Try adjusting your search or filters.</Text>
-        </Box>
-      ) : (
-        <SimpleGrid
-          columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-          gap={4}
+    <>
+      <Container maxW="6xl" px={0}>
+        {/* toolbar */}
+        <Flex
+          align="center"
+          gap={3}
+          mb={4}
+          wrap="wrap"
           px={4}
-          py={4}
+          py={3}
+          bg="#F7FAFC"
+          borderBottom="1px solid"
+          borderColor="gray.200"
         >
-          {filtered.map((course) => {
-            const id = String(course._id);
-            const alreadyEnrolled = enrolledIds.has(id);
-            const canShowPlus = (isEmployee || isManager) && !alreadyEnrolled;
+          <Heading size="sm" flexShrink={0}>
+            Library
+          </Heading>
 
-            return (
-              <CourseTile
-                key={id}
-                course={course}
-                showPlus={canShowPlus}
-                isLoading={enrollMutation.isPending}
-                onPlus={() => enrollMutation.mutate(id)}
-              />
-            );
-          })}
-        </SimpleGrid>
-      )}
-    </Container>
+          <Input
+            placeholder="Search courses..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            maxW="360px"
+            bg="white"
+            borderColor="gray.300"
+          />
+
+          <Box
+            as="select"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            maxW="220px"
+            bg="white"
+            border="1px solid"
+            borderColor="gray.300"
+            rounded="md"
+            px={3}
+            py={2}
+          >
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c === "all" ? "All categories" : c}
+              </option>
+            ))}
+          </Box>
+
+          <Box ml="auto" />
+
+          {(isAdmin || isManager) && (
+            <HStack spacing={2}>
+              {isAdmin && (
+                <Button
+                  size="sm"
+                  bg="blue.600"
+                  _hover={{ bg: "blue.700" }}
+                  color="white"
+                  onClick={() => setCreateOpen(true)}
+                >
+                  Create a course
+                </Button>
+              )}
+              <Button
+                size="sm"
+                bg="green.600"
+                _hover={{ bg: "green.700" }}
+                color="white"
+                onClick={() => nav("/enrollments/assign")}
+              >
+                Assign a course
+              </Button>
+              {isAdmin && (
+                <Button
+                  size="sm"
+                  bg="red.600"
+                  _hover={{ bg: "red.700" }}
+                  color="white"
+                  onClick={() => nav("/courses/delete")}
+                >
+                  Delete a course
+                </Button>
+              )}
+            </HStack>
+          )}
+        </Flex>
+
+        {/* tiles */}
+        {filtered.length === 0 ? (
+          <Box
+            p={6}
+            textAlign="center"
+            bg="white"
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="xl"
+            mx={4}
+          >
+            <Heading size="sm" mb={2}>
+              No courses found
+            </Heading>
+            <Text color="gray.600">Try adjusting your search or filters.</Text>
+          </Box>
+        ) : (
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+            gap={4}
+            px={4}
+            py={4}
+          >
+            {filtered.map((course) => {
+              const id = String(course._id);
+              const alreadyEnrolled = enrolledIds.has(id);
+              const canShowPlus = (isEmployee || isManager) && !alreadyEnrolled;
+
+              return (
+                <CourseTile
+                  key={id}
+                  course={course}
+                  showPlus={canShowPlus}
+                  isLoading={enrollMutation.isPending}
+                  onPlus={() => enrollMutation.mutate(id)}
+                />
+              );
+            })}
+          </SimpleGrid>
+        )}
+      </Container>
+      <CreateCourseModal
+        isOpen={isCreateOpen}
+        onClose={() => setCreateOpen(false)}
+        categories={categories.filter((c) => c !== "all")}
+      />
+    </>
   );
 }
