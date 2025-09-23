@@ -17,6 +17,7 @@ import { fetchCourses } from "../api/courses";
 import { fetchMe } from "../api/me";
 import { enrollSelf } from "../api/enrollments";
 import CreateCourseModal from "../components/CreateCourseModal";
+import AssignCourseModal from "../components/AssignCourseModal";
 
 function fmtHours(h) {
   const n = Number(h) || 0;
@@ -91,6 +92,7 @@ export default function Library() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const [isCreateOpen, setCreateOpen] = useState(false);
+  const [isAssignOpen, setAssignOpen] = useState(false);
 
   // who am I?
   const user = (() => {
@@ -251,7 +253,7 @@ export default function Library() {
                 bg="green.600"
                 _hover={{ bg: "green.700" }}
                 color="white"
-                onClick={() => nav("/enrollments/assign")}
+                onClick={() => setAssignOpen(true)}
               >
                 Assign a course
               </Button>
@@ -310,6 +312,10 @@ export default function Library() {
         isOpen={isCreateOpen}
         onClose={() => setCreateOpen(false)}
         categories={categories.filter((c) => c !== "all")}
+      />
+      <AssignCourseModal
+        isOpen={isAssignOpen}
+        onClose={() => setAssignOpen(false)}
       />
     </>
   );

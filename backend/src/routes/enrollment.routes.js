@@ -5,6 +5,7 @@ import {
   assignCourse,
   getEnrollmentsByUser,
   enrollSelf,
+  checkEnrollmentStatus,
 } from "../controllers/enrollment.controller.js";
 
 const r = Router();
@@ -16,5 +17,14 @@ r.get("/by-user/:id", requireAuth, getEnrollmentsByUser);
 
 // Employees & Managers can self-enroll
 r.post("/self", requireAuth, enrollSelf);
+
+//Check which of the provided users are already enrolled in a course
+
+r.post(
+  "/check-status",
+  requireAuth,
+  requireRole("manager", "admin"),
+  checkEnrollmentStatus
+);
 
 export default r;

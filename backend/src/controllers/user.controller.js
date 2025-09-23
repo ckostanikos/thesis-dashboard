@@ -1,12 +1,40 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 
-export async function listUsers(_req, res) {
-  const users = await User.find()
-    .select("-password")
-    .sort({ role: 1, name: 1 })
-    .lean();
-  res.json(users);
+export async function listUsers(req, res, next) {
+  try {
+    const { role, q, teamId, limit } = req.query;
+
+    const filter = {};
+    if (role) {
+      // supports role=employee or role=employee,manager
+      const roles = String(role)
+        .split(",")
+        .map((r) => r.trim().toLowerCase())
+        .filter(Boolean);
+      if (roles.length) filter.role = { $in: roles };
+    }
+    if (teamId) {
+      filter.teamId = teamId; // exact match; send the ObjectId string
+    }
+    if (q && q.trim()) {
+      const safe = q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const rx = new RegExp(safe, "i");
+      filter.$or = [{ name: rx }, { email: rx }];
+    }
+
+    const limitNum = Math.min(Math.max(parseInt(limit || "1000", 10), 1), 1000);
+
+    const users = await User.find(filter)
+      .select("_id name email role teamId")
+      .sort({ name: 1, email: 1 })
+      .limit(limitNum)
+      .lean();
+
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function createUser(req, res) {
@@ -39,7 +67,7 @@ export async function updateUser(req, res) {
   const update = {};
   if (name) update.name = name;
   if (email) update.email = email.toLowerCase();
-  if (role) update.role = role; // must be one of enum values
+  if (role) update.role = role;
   if (teamId !== undefined) update.teamId = teamId || null;
   if (password) update.password = await bcrypt.hash(password, 10);
   const user = await User.findByIdAndUpdate(id, update, { new: true })

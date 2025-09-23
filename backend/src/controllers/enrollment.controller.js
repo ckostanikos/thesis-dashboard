@@ -169,3 +169,49 @@ export async function enrollSelf(req, res) {
     throw err;
   }
 }
+
+export async function checkEnrollmentStatus(req, res, next) {
+  try {
+    const actor = req.user; // { id, role, teamId }
+    if (!actor) return res.status(401).json({ message: "Unauthorized" });
+
+    const { courseId, userIds } = req.body || {};
+    if (!courseId || !Array.isArray(userIds) || userIds.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "courseId and userIds[] are required" });
+    }
+
+    // Determine which userIds the actor is allowed to query
+    let allowedIds = userIds.map(String);
+
+    if (actor.role === "manager") {
+      if (!actor.teamId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      const teamEmployees = await User.find({
+        teamId: actor.teamId,
+        role: "employee",
+        _id: { $in: allowedIds },
+      })
+        .select("_id")
+        .lean();
+      allowedIds = teamEmployees.map((u) => String(u._id));
+    } else if (actor.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    // Find enrollments for the course among allowed users
+    const rows = await Enrollment.find({
+      courseId,
+      userId: { $in: allowedIds },
+    })
+      .select("userId")
+      .lean();
+
+    const enrolledUserIds = rows.map((r) => String(r.userId));
+    res.json({ enrolledUserIds, checkedCount: allowedIds.length });
+  } catch (err) {
+    next(err);
+  }
+}
