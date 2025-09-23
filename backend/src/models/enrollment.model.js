@@ -13,4 +13,6 @@ const enrollmentSchema = new mongoose.Schema(
 // A user should have at most one enrollment per course
 enrollmentSchema.index({ userId: 1, courseId: 1 }, { unique: true });
 
+enrollmentSchema.index({ courseId: 1 });
+
 export default mongoose.model("Enrollment", enrollmentSchema);

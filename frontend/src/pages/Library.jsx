@@ -18,6 +18,7 @@ import { fetchMe } from "../api/me";
 import { enrollSelf } from "../api/enrollments";
 import CreateCourseModal from "../components/CreateCourseModal";
 import AssignCourseModal from "../components/AssignCourseModal";
+import DeleteCourseModal from "../components/DeleteCourseModal";
 
 function fmtHours(h) {
   const n = Number(h) || 0;
@@ -93,6 +94,7 @@ export default function Library() {
   const qc = useQueryClient();
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [isAssignOpen, setAssignOpen] = useState(false);
+  const [isDeleteOpen, setDeleteOpen] = useState(false);
 
   // who am I?
   const user = (() => {
@@ -263,7 +265,7 @@ export default function Library() {
                   bg="red.600"
                   _hover={{ bg: "red.700" }}
                   color="white"
-                  onClick={() => nav("/courses/delete")}
+                  onClick={() => setDeleteOpen(true)}
                 >
                   Delete a course
                 </Button>
@@ -316,6 +318,10 @@ export default function Library() {
       <AssignCourseModal
         isOpen={isAssignOpen}
         onClose={() => setAssignOpen(false)}
+      />
+      <DeleteCourseModal
+        isOpen={isDeleteOpen}
+        onClose={() => setDeleteOpen(false)}
       />
     </>
   );
