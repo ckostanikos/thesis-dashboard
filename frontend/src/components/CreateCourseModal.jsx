@@ -1,4 +1,3 @@
-// src/components/CreateCourseModal.jsx
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {

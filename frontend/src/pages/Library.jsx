@@ -30,65 +30,59 @@ function fmtDue(dateStr) {
 }
 
 function CourseTile({ course, showPlus, onPlus, isLoading }) {
+  const img = course.imageUrl || "/images/placeholder.jpg"; // public/images/placeholder.jpg
+
   return (
     <Box
-      position="relative"
       border="1px solid"
       borderColor="gray.200"
       borderRadius="xl"
       overflow="hidden"
       bg="white"
+      transition="all 120ms ease"
+      _hover={{ boxShadow: "md", transform: "translateY(-1px)" }}
+      position="relative"
     >
-      {/* keep square */}
-      <Box pb="100%" />
-      {/* image */}
-      <Box
-        position="absolute"
-        inset={0}
-        bgImage={`url(${course.imageUrl || "https://picsum.photos/600"})`}
-        bgSize="cover"
-        bgPos="center"
-        _after={{
-          content: '""',
-          position: "absolute",
-          inset: 0,
-          bgGradient: "linear(to-t, blackAlpha.700, transparent)",
-        }}
-      />
-      {/* info overlay */}
-      <Box
-        position="absolute"
-        left={0}
-        right={0}
-        bottom={0}
-        p={3}
-        color="white"
-      >
-        <Text fontWeight="semibold" noOfLines={2}>
+      {/* Thumbnail (square) */}
+      <Box position="relative" w="100%">
+        <Box pb="100%" />
+        <Box position="absolute" inset={0}>
+          <Box
+            as="img"
+            src={img}
+            alt={course.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </Box>
+        {/* Optional enroll + */}
+        {showPlus && (
+          <Button
+            position="absolute"
+            top={2}
+            right={2}
+            size="sm"
+            borderRadius="full"
+            bg="white"
+            color="gray.800"
+            _hover={{ bg: "gray.100" }}
+            onClick={onPlus}
+            isDisabled={isLoading}
+            title="Enroll"
+          >
+            {isLoading ? "…" : "+"}
+          </Button>
+        )}
+      </Box>
+
+      {/* Info block below image */}
+      <Box p={3}>
+        <Text fontWeight="semibold" noOfLines={2} mb={1}>
           {course.title}
         </Text>
-        <Text fontSize="xs" opacity={0.9}>
+        <Text fontSize="xs" color="gray.600" minH="18px">
           {fmtHours(course.hours)} • Due: {fmtDue(course.dueDate)}
         </Text>
       </Box>
-
-      {showPlus && (
-        <Button
-          position="absolute"
-          top={2}
-          right={2}
-          size="sm"
-          borderRadius="full"
-          bg="white"
-          color="gray.800"
-          _hover={{ bg: "gray.100" }}
-          onClick={onPlus}
-          isDisabled={isLoading}
-          title="Enroll"
-        >
-          {isLoading ? "…" : "+"}
-        </Button>
-      )}
     </Box>
   );
 }
@@ -293,12 +287,7 @@ export default function Library() {
             <Text color="gray.600">Try adjusting your search or filters.</Text>
           </Box>
         ) : (
-          <SimpleGrid
-            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-            gap={4}
-            px={4}
-            py={4}
-          >
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={5} px={4} py={4}>
             {filtered.map((course) => {
               const id = String(course._id);
               const alreadyEnrolled = enrolledIds.has(id);
