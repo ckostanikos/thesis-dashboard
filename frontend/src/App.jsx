@@ -49,8 +49,8 @@ export default function App() {
             wrap="wrap"
             gap={3}
           >
-            <Text fontWeight="bold">Company SkillHub</Text>
-            <Text>dev@helpdesk.com</Text>
+            <Text fontWeight="bold">Employee Learning & Tracking System</Text>
+            <Text>admin@org.com</Text>
             <Text ml="auto">All Rights Reserved.</Text>
           </Flex>
         </Container>

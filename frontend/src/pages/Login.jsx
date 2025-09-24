@@ -1,17 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box, Button, Container, Heading, Text } from "@chakra-ui/react";
 import { login } from "../api/auth";
-import {
-  Box,
-  Button,
-  Input,
-  Text,
-  Heading,
-  VStack,
-  Alert,
-  Container,
-  Field, // <-- v3 forms
-} from "@chakra-ui/react";
 
 export default function Login() {
   const [email, setEmail] = useState("admin@org.com");
@@ -26,66 +16,115 @@ export default function Login() {
       const { token, user } = await login(email, password);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      if (user.role === "admin") nav("/company");
+
+      if (user.role === "admin") nav("/company"); // or your admin landing
       else if (user.role === "manager") nav(`/team/${user.teamId}`);
       else nav("/my-courses");
     } catch (err) {
-      setError(err?.response?.data?.message || "Login failed");
+      const msg =
+        err?.response?.data?.message ?? err?.message ?? "Login failed";
+      setError(msg);
     }
   }
 
   return (
-    <Box minH="100dvh" bg="gray.100" display="flex" alignItems="center">
-      <Container maxW="sm">
+    <Box minH="100dvh" display="grid" placeItems="center" bg="gray.100">
+      <Container maxW="sm" w="full">
         <Box
-          as="form"
-          onSubmit={onSubmit}
           bg="white"
-          borderRadius="xl"
-          boxShadow="sm"
           p={6}
+          rounded="xl"
+          boxShadow="md"
+          border="1px solid"
+          borderColor="gray.200"
         >
-          <VStack align="stretch" spacing={4}>
-            <Heading size="md">Sign in</Heading>
+          <Heading size="sm" mb={4}>
+            Sign in
+          </Heading>
 
-            {error && (
-              <Alert.Root status="error" variant="subtle" borderRadius="md">
-                <Alert.Icon />
-                <Alert.Description fontSize="sm">{error}</Alert.Description>
-              </Alert.Root>
-            )}
+          {error && (
+            <Box
+              role="alert"
+              mb={3}
+              p={3}
+              bg="red.50"
+              color="red.800"
+              border="1px solid"
+              borderColor="red.200"
+              rounded="md"
+              fontSize="sm"
+            >
+              {error}
+            </Box>
+          )}
 
-            <Field.Root>
-              <Field.Label fontSize="sm">Email</Field.Label>
-              <Input
+          <Box as="form" onSubmit={onSubmit}>
+            <Box mb={3}>
+              <Text
+                as="label"
+                htmlFor="email"
+                fontSize="sm"
+                mb={1}
+                display="block"
+              >
+                Email
+              </Text>
+              <Box
+                as="input"
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                bg="gray.50"
+                w="100%"
+                px={3}
+                py={2}
+                bg="#F3F4F6"
+                border="1px solid"
                 borderColor="gray.300"
+                rounded="md"
               />
-            </Field.Root>
+            </Box>
 
-            <Field.Root>
-              <Field.Label fontSize="sm">Password</Field.Label>
-              <Input
+            <Box mb={4}>
+              <Text
+                as="label"
+                htmlFor="password"
+                fontSize="sm"
+                mb={1}
+                display="block"
+              >
+                Password
+              </Text>
+              <Box
+                as="input"
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                bg="gray.50"
+                w="100%"
+                px={3}
+                py={2}
+                bg="#F3F4F6"
+                border="1px solid"
                 borderColor="gray.300"
+                rounded="md"
               />
-            </Field.Root>
+            </Box>
 
-            <Button type="submit" colorScheme="blue" w="full">
+            <Button
+              type="submit"
+              w="100%"
+              bg="blue.600"
+              _hover={{ bg: "blue.700" }}
+              color="white"
+            >
               Login
             </Button>
 
-            <Text fontSize="xs" color="gray.500">
-              Try: admin@org.com / manager@org.com / konstantina@org.com
-              (password)
+            <Text fontSize="xs" color="gray.500" mt={3}>
+              Forgot your password? Contact the admin. (admin@org.com)
             </Text>
-          </VStack>
+          </Box>
         </Box>
       </Container>
     </Box>

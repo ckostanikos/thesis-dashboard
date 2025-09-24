@@ -88,10 +88,10 @@ export default function Navbar({ role, teamId, onLogout }) {
               fontSize="sm"
               boxShadow="sm"
             >
-              TD
+              LTS
             </Box>
             <Heading size="sm" letterSpacing="tight">
-              Thesis Dashboard
+              Employee Learning & Tracking System
             </Heading>
           </HStack>
 
