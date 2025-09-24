@@ -11,6 +11,9 @@ import Library from "./pages/Library";
 import Company from "./pages/Company";
 import Team from "./pages/Team";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
+import UserDetail from "./pages/UserDetail";
+import Users from "./pages/Users";
 
 const system = createSystem(defaultConfig);
 
@@ -28,6 +31,22 @@ const router = createBrowserRouter([
       { path: "library", element: <Library /> },
       { path: "company", element: <Company /> },
       { path: "team/:id", element: <Team /> },
+      {
+        path: "users",
+        element: (
+          <AdminRoute>
+            <Users />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "users/:id",
+        element: (
+          <AdminRoute>
+            <UserDetail />
+          </AdminRoute>
+        ),
+      },
       { index: true, element: <MyCourses /> },
     ],
   },

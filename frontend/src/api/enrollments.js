@@ -21,3 +21,8 @@ export async function checkEnrollmentStatus(courseId, userIds) {
   });
   return data; // { enrolledUserIds: [...], checkedCount: n }
 }
+
+export async function fetchEnrollmentsByUser(userId) {
+  const { data } = await api.get(`/api/enrollments/by-user/${userId}`);
+  return data; // { user, enrollments: [...] }
+}
