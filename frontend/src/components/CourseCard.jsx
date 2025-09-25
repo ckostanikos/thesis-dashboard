@@ -1,13 +1,10 @@
-import {
-  Box,
-  Flex,
-  Image,
-  Heading,
-  Text,
-  Button,
-  Progress,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Heading, Text, Button } from "@chakra-ui/react";
 import Chip from "./Chip";
+
+function getStatus(progress, completedAt) {
+  const done = !!completedAt || Number(progress) >= 100;
+  return done ? "Completed" : "In progress";
+}
 
 function timeLeftLabel(dueDate) {
   const now = new Date();
@@ -27,6 +24,7 @@ export default function CourseCard({ enrollment }) {
   const category = enrollment?.course?.category;
   const hours = enrollment?.course?.hours;
   const progress = enrollment?.progress ?? 0;
+  const completedAt = enrollment?.completedAt ?? null;
 
   const plannedMin = enrollment?.course?.plannedMinutes;
   const minutesSpent = enrollment?.minutesSpent;
@@ -76,6 +74,7 @@ export default function CourseCard({ enrollment }) {
               </Chip>
             )}
             {dueDate && <Chip>{timeLeftLabel(dueDate)}</Chip>}
+            <Chip>{getStatus(progress, completedAt)}</Chip>
           </Flex>
 
           <Heading size="md" mt={3} noOfLines={2}>
@@ -90,18 +89,6 @@ export default function CourseCard({ enrollment }) {
           )}
 
           <Flex mt="auto" align="center" gap={4} wrap="wrap">
-            <Box flex="1" minW="200px">
-              {/* Chakra v3 Progress (slot API) */}
-              <Progress.Root value={progress} min={0} max={100}>
-                <Progress.Track bg="gray.200" borderRadius="md">
-                  <Progress.Range />
-                </Progress.Track>
-              </Progress.Root>
-              <Text mt={1} fontSize="xs" color="gray.500">
-                Progress: {progress}%
-              </Text>
-            </Box>
-
             <Button
               bg="#2B6CB0"
               _hover={{ bg: "#2C5282" }}

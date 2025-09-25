@@ -93,7 +93,7 @@ export default function UserDetail() {
               <Th>Course</Th>
               <Th>Category</Th>
               <Th>Hours</Th>
-              <Th>Progress</Th>
+              <Th>Status</Th>
               <Th>Due</Th>
             </Box>
           </Box>
@@ -109,7 +109,9 @@ export default function UserDetail() {
                 <Td>{e.course?.category || "—"}</Td>
                 <Td>{e.course?.hours ?? "—"}h</Td>
                 <Td>
-                  <ProgressBar value={e.progress ?? 0} />
+                  {e.completedAt || (e.progress ?? 0) >= 100
+                    ? "Completed"
+                    : "In progress"}
                 </Td>
                 <Td>{fmtDate(e.dueDate || e.course?.dueDate)}</Td>
               </Box>
@@ -151,26 +153,7 @@ function Td({ children, colSpan }) {
     </Box>
   );
 }
-function ProgressBar({ value }) {
-  const v = Math.max(0, Math.min(100, Number(value) || 0));
-  return (
-    <Box w="160px">
-      <Box h="6px" bg="gray.200" rounded="md" position="relative">
-        <Box
-          position="absolute"
-          insetY={0}
-          left={0}
-          w={`${v}%`}
-          bg="blue.600"
-          rounded="md"
-        />
-      </Box>
-      <Text fontSize="xs" color="gray.600" mt={1}>
-        {v}%
-      </Text>
-    </Box>
-  );
-}
+
 function fmtDate(d) {
   if (!d) return "—";
   const dt = new Date(d);
