@@ -19,6 +19,8 @@ import { enrollSelf } from "../api/enrollments";
 import CreateCourseModal from "../components/CreateCourseModal";
 import AssignCourseModal from "../components/AssignCourseModal";
 import DeleteCourseModal from "../components/DeleteCourseModal";
+import { Link as RouterLink } from "react-router-dom";
+import { Link as ChakraLink } from "@chakra-ui/react";
 
 function fmtHours(h) {
   const n = Number(h) || 0;
@@ -31,8 +33,9 @@ function fmtDue(dateStr) {
   return d.toLocaleDateString();
 }
 
-function CourseTile({ course, showPlus, onPlus, isLoading }) {
-  const img = course.imageUrl || "/images/placeholder.jpg"; // public/images/placeholder.jpg
+function CourseTile({ course, showPlus, onPlus, isLoading, isAdmin }) {
+  const img = course.imageUrl || "/images/placeholder.jpg";
+  const href = `/courses/${course._id}`;
 
   return (
     <Box
@@ -47,15 +50,24 @@ function CourseTile({ course, showPlus, onPlus, isLoading }) {
     >
       {/* Thumbnail (square) */}
       <Box position="relative" w="100%">
-        <Box pb="100%" />
-        <Box position="absolute" inset={0}>
-          <Box
-            as="img"
-            src={img}
-            alt={course.title}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </Box>
+        {/* Make the image a link */}
+        <ChakraLink
+          as={RouterLink}
+          to={href}
+          _hover={{ textDecoration: "none" }}
+          display="block"
+        >
+          <Box pb="100%" />
+          <Box position="absolute" inset={0}>
+            <Box
+              as="img"
+              src={img}
+              alt={course.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </Box>
+        </ChakraLink>
+
         {/* Optional enroll + */}
         {showPlus && (
           <Button
@@ -78,9 +90,17 @@ function CourseTile({ course, showPlus, onPlus, isLoading }) {
 
       {/* Info block below image */}
       <Box p={3}>
-        <Text fontWeight="semibold" noOfLines={2} mb={1}>
-          {course.title}
-        </Text>
+        {/* Make the title a link */}
+        <ChakraLink
+          as={RouterLink}
+          to={href}
+          _hover={{ textDecoration: "none", color: "blue.600" }}
+        >
+          <Text fontWeight="semibold" noOfLines={2} mb={1}>
+            {course.title}
+          </Text>
+        </ChakraLink>
+
         <Text fontSize="xs" color="gray.600" minH="18px">
           {fmtHours(course.hours)} • Due: {fmtDue(course.dueDate)}
         </Text>
