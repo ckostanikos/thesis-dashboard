@@ -13,8 +13,7 @@ export default function Login() {
     e.preventDefault();
     setError("");
     try {
-      const { token, user } = await login(email, password);
-      localStorage.setItem("token", token);
+      const { user } = await login(email, password);
       localStorage.setItem("user", JSON.stringify(user));
 
       if (user.role === "admin") nav("/company"); // or your admin landing

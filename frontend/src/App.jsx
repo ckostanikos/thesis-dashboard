@@ -1,5 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Box, Container, Flex, Text } from "@chakra-ui/react";
+import { logout as apiLogout } from "./api/auth";
 import Navbar from "./components/Navbar";
 
 export default function App() {
@@ -14,10 +15,16 @@ export default function App() {
   const role = user?.role || "employee";
   const teamId = user?.teamId || null;
 
-  function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    nav("/login", { replace: true });
+  async function logout() {
+    try {
+      // destroy server-side session + clear cookie
+      await apiLogout();
+    } catch {
+      // ignore; we’ll still clear the client state
+    } finally {
+      localStorage.removeItem("user");
+      nav("/login", { replace: true });
+    }
   }
 
   return (

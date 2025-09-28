@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
 export async function login(req, res) {
@@ -10,20 +9,32 @@ export async function login(req, res) {
       .json({ message: "Email and password are required." });
   }
 
-  const user = await User.findOne({ email }).lean();
+  const user = await User.findOne({ email: email.toLowerCase() });
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-  // user.password is hidden by toJSON, but we used .lean() so it’s raw
   const ok = await bcrypt.compare(password, user.password || "");
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign(
-    { id: user._id, role: user.role, teamId: user.teamId || null },
-    process.env.JWT_SECRET,
-    { expiresIn: "8h" }
-  );
+  // Put auth info in the session (cookie is set by express-session)
+  req.session.userId = String(user._id);
+  req.session.role = user.role;
+  req.session.teamId = user.teamId ? String(user.teamId) : null;
 
-  // remove password before sending user info
-  const { password: _pw, ...safeUser } = user;
-  return res.json({ token, user: safeUser });
+  // Safe user payload for the UI
+  const safeUser = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    teamId: user.teamId,
+  };
+
+  return res.json({ user: safeUser });
+}
+
+export async function logout(req, res) {
+  req.session?.destroy(() => {
+    res.clearCookie("sid");
+    res.json({ message: "ok" });
+  });
 }
