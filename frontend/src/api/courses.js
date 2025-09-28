@@ -1,4 +1,4 @@
-import api from "./client";
+import api, { ensureCsrf } from "./client";
 
 export async function fetchCourses(opts = {}) {
   const params = {};
@@ -8,17 +8,19 @@ export async function fetchCourses(opts = {}) {
 }
 
 export async function createCourse(payload) {
-  // payload: { title, category, hours, dueDate, description?, imageUrl? }
+  await ensureCsrf();
   const { data } = await api.post("/api/courses", payload);
   return data;
 }
 
 export async function deleteCourseById(id) {
+  await ensureCsrf();
   const { data } = await api.delete(`/api/courses/${id}`);
   return data;
 }
 
 export async function bulkDeleteCourses(ids) {
+  await ensureCsrf();
   const { data } = await api.post("/api/courses/bulk-delete", { ids });
   return data;
 }
@@ -29,6 +31,7 @@ export async function fetchCourse(id) {
 }
 
 export async function updateCourse(id, payload) {
+  await ensureCsrf();
   const { data } = await api.patch(`/api/courses/${id}`, payload);
   return data;
 }

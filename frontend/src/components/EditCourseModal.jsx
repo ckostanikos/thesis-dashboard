@@ -1,4 +1,21 @@
-function EditCourseModal({ isOpen, onClose, course, onSave, isSaving, error }) {
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Container,
+  Heading,
+  HStack,
+  Text,
+} from "@chakra-ui/react";
+
+export default function EditCourseModal({
+  isOpen,
+  onClose,
+  course,
+  onSave,
+  isSaving,
+  error,
+}) {
   const [title, setTitle] = useState(course.title || "");
   const [category, setCategory] = useState(course.category || "General");
   const [hours, setHours] = useState(course.hours || 0);
@@ -190,7 +207,7 @@ function EditCourseModal({ isOpen, onClose, course, onSave, isSaving, error }) {
 function toInputDate(d) {
   if (!d) return "";
   const dt = new Date(d);
-  if (isNaN(dt)) return "";
+  if (Number.isNaN(dt.getTime())) return "";
   const yyyy = dt.getFullYear();
   const mm = String(dt.getMonth() + 1).padStart(2, "0");
   const dd = String(dt.getDate()).padStart(2, "0");

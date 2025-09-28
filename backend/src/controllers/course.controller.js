@@ -111,8 +111,18 @@ export async function updateCourse(req, res, next) {
     const patch = {};
     if (title !== undefined) patch.title = title;
     if (category !== undefined) patch.category = category;
-    if (hours !== undefined) patch.hours = hours;
-    if (dueDate !== undefined) patch.dueDate = new Date(dueDate);
+    if (hours !== undefined) patch.hours = Number(hours) || 0;
+    if (dueDate !== undefined) {
+      if (dueDate === null || dueDate === "") {
+        // keeps existing dueDate (do not overwrite with invalid/epoch)
+      } else {
+        const d = new Date(dueDate);
+        if (Number.isNaN(d.getTime())) {
+          return res.status(400).json({ message: "Invalid dueDate" });
+        }
+        patch.dueDate = d;
+      }
+    }
     if (description !== undefined) patch.description = description;
     if (imageUrl !== undefined) patch.imageUrl = imageUrl;
 

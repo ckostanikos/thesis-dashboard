@@ -13,6 +13,7 @@ import {
 import { fetchCourse, updateCourse } from "../api/courses";
 import { fetchMe } from "../api/me";
 import { markCompleted } from "../api/enrollments";
+import EditCourseModal from "../components/EditCourseModal";
 
 function roleOfCurrentUser() {
   try {
