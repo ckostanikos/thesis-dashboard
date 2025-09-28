@@ -15,6 +15,7 @@ import AdminRoute from "./routes/AdminRoute";
 import UserDetail from "./pages/UserDetail";
 import Users from "./pages/Users";
 import CoursePage from "./pages/CoursePage";
+import Profile from "./pages/Profile";
 
 const system = createSystem(defaultConfig);
 
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { path: "library", element: <Library /> },
       { path: "company", element: <Company /> },
       { path: "team/:id", element: <Team /> },
+      { path: "profile", element: <Profile /> },
       {
         path: "users",
         element: (
