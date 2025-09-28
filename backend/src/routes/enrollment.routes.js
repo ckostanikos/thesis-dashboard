@@ -6,6 +6,7 @@ import {
   getEnrollmentsByUser,
   enrollSelf,
   checkEnrollmentStatus,
+  markCompleted,
 } from "../controllers/enrollment.controller.js";
 
 const r = Router();
@@ -26,5 +27,8 @@ r.post(
   requireRole("manager", "admin"),
   checkEnrollmentStatus
 );
+
+//any authenticated user can mark THEIR OWN completion
+r.patch("/mark-completed", requireAuth, markCompleted);
 
 export default r;

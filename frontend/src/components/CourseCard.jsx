@@ -1,5 +1,7 @@
 import { Box, Flex, Image, Heading, Text, Button } from "@chakra-ui/react";
 import Chip from "./Chip";
+import { Link as RouterLink } from "react-router-dom";
+import { Link as ChakraLink } from "@chakra-ui/react";
 
 function getStatus(progress, completedAt) {
   const done = !!completedAt || Number(progress) >= 100;
@@ -20,6 +22,7 @@ function timeLeftLabel(dueDate) {
 
 export default function CourseCard({ enrollment }) {
   const title = enrollment?.course?.title ?? "Untitled course";
+  const courseId = enrollment?.course?._id;
   const img = enrollment?.course?.imageUrl;
   const category = enrollment?.course?.category;
   const hours = enrollment?.course?.hours;
@@ -32,9 +35,7 @@ export default function CourseCard({ enrollment }) {
     ? new Date(enrollment.course.dueDate)
     : null;
 
-  let cta = "Start";
-  if (progress > 0 && progress < 100) cta = "Resume";
-  if (progress >= 100) cta = "Repeat";
+  let cta = completedAt || progress >= 100 ? "Open" : "Start";
 
   return (
     <Box
@@ -48,14 +49,20 @@ export default function CourseCard({ enrollment }) {
       <Flex gap={6} align="stretch" direction={{ base: "column", md: "row" }}>
         {/* Thumbnail */}
         <Box w={{ base: "100%", md: "320px" }} flexShrink={0}>
-          <Image
-            src={img || "https://picsum.photos/640/360"}
-            alt={title}
-            borderRadius="lg"
-            objectFit="cover"
-            w="100%"
-            h={{ base: "160px", md: "180px" }}
-          />
+          <ChakraLink
+            as={RouterLink}
+            to={courseId ? `/courses/${courseId}` : "#"}
+            _hover={{ textDecoration: "none" }}
+          >
+            <Image
+              src={img || "https://picsum.photos/640/360"}
+              alt={title}
+              borderRadius="lg"
+              objectFit="cover"
+              w="100%"
+              h={{ base: "160px", md: "180px" }}
+            />
+          </ChakraLink>
         </Box>
 
         {/* Content */}
@@ -77,9 +84,15 @@ export default function CourseCard({ enrollment }) {
             <Chip>{getStatus(progress, completedAt)}</Chip>
           </Flex>
 
-          <Heading size="md" mt={3} noOfLines={2}>
-            {title}
-          </Heading>
+          <ChakraLink
+            as={RouterLink}
+            to={courseId ? `/courses/${courseId}` : "#"}
+            _hover={{ textDecoration: "none" }}
+          >
+            <Heading size="md" mt={3} noOfLines={2}>
+              {title}
+            </Heading>
+          </ChakraLink>
           {(category || hours) && (
             <Text mt={1} color="gray.600" fontSize="sm">
               {category ? `${category}` : ""}
@@ -90,10 +103,13 @@ export default function CourseCard({ enrollment }) {
 
           <Flex mt="auto" align="center" gap={4} wrap="wrap">
             <Button
+              as={RouterLink}
+              to={courseId ? `/courses/${courseId}` : "#"}
               bg="#2B6CB0"
               _hover={{ bg: "#2C5282" }}
               color="white"
               borderRadius="md"
+              isDisabled={!courseId}
             >
               {cta}
             </Button>

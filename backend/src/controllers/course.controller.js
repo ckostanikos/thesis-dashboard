@@ -92,6 +92,40 @@ export async function deleteCourse(req, res, next) {
   }
 }
 
+export async function getCourse(req, res, next) {
+  try {
+    const { id } = req.params;
+    const course = await Course.findById(id).lean();
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    res.json(course);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateCourse(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { title, category, hours, dueDate, description, imageUrl } =
+      req.body || {};
+    const patch = {};
+    if (title !== undefined) patch.title = title;
+    if (category !== undefined) patch.category = category;
+    if (hours !== undefined) patch.hours = hours;
+    if (dueDate !== undefined) patch.dueDate = new Date(dueDate);
+    if (description !== undefined) patch.description = description;
+    if (imageUrl !== undefined) patch.imageUrl = imageUrl;
+
+    const updated = await Course.findByIdAndUpdate(id, patch, {
+      new: true,
+    }).lean();
+    if (!updated) return res.status(404).json({ message: "Course not found" });
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function bulkDeleteCourses(req, res, next) {
   try {
     const { ids } = req.body || {};

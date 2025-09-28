@@ -6,6 +6,8 @@ import {
   createCourse,
   bulkDeleteCourses,
   deleteCourse,
+  getCourse,
+  updateCourse,
 } from "../controllers/course.controller.js";
 
 const r = Router();
@@ -21,5 +23,10 @@ r.post("/bulk-delete", requireAuth, requireRole("admin"), bulkDeleteCourses);
 
 // admin only can delete a course
 r.delete("/:id", requireAuth, requireRole("admin"), deleteCourse);
+
+r.get("/:id", requireAuth, getCourse);
+
+// admin only can update a course
+r.patch("/:id", requireAuth, requireRole("admin"), updateCourse);
 
 export default r;

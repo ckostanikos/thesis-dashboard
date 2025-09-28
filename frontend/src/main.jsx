@@ -14,6 +14,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 import UserDetail from "./pages/UserDetail";
 import Users from "./pages/Users";
+import CoursePage from "./pages/CoursePage";
 
 const system = createSystem(defaultConfig);
 
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
           </AdminRoute>
         ),
       },
+      { path: "courses/:id", element: <CoursePage /> },
       { index: true, element: <MyCourses /> },
     ],
   },

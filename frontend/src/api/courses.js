@@ -22,3 +22,13 @@ export async function bulkDeleteCourses(ids) {
   const { data } = await api.post("/api/courses/bulk-delete", { ids });
   return data;
 }
+
+export async function fetchCourse(id) {
+  const { data } = await api.get(`/api/courses/${id}`);
+  return data;
+}
+
+export async function updateCourse(id, payload) {
+  const { data } = await api.patch(`/api/courses/${id}`, payload);
+  return data;
+}

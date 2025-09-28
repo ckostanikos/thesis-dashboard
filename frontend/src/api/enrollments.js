@@ -26,3 +26,11 @@ export async function fetchEnrollmentsByUser(userId) {
   const { data } = await api.get(`/api/enrollments/by-user/${userId}`);
   return data; // { user, enrollments: [...] }
 }
+
+export async function markCompleted(courseId, completed) {
+  const { data } = await api.patch("/api/enrollments/mark-completed", {
+    courseId,
+    completed,
+  });
+  return data;
+}

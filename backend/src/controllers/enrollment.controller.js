@@ -125,6 +125,33 @@ export async function assignCourse(req, res) {
   }
 }
 
+//mark/unmark completion for the logged-in user
+export async function markCompleted(req, res, next) {
+  try {
+    const userId = req.user.id;
+    const { courseId, completed } = req.body || {};
+    if (!courseId)
+      return res.status(400).json({ message: "courseId is required" });
+
+    const enr = await Enrollment.findOne({ userId, courseId });
+    if (!enr)
+      return res.status(404).json({ message: "Not enrolled in this course" });
+
+    if (completed) {
+      enr.progress = 100;
+      enr.completedAt = new Date();
+    } else {
+      // keep it simple: unmark completion but don't reset historical progress to 0
+      enr.completedAt = null;
+      if (enr.progress === 100) enr.progress = 99; // so it shows "In progress"
+    }
+    await enr.save();
+    res.json({ message: "Updated", enrollment: enr.toObject() });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function enrollSelf(req, res) {
   const actor = req.user; // { id, role, teamId, ... }
   if (!actor) return res.status(401).json({ message: "Unauthorized" });
