@@ -112,6 +112,7 @@ export default function Library() {
   // filters
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [hideEnrolled, setHideEnrolled] = useState(false);
 
   // data
   const {
@@ -154,6 +155,11 @@ export default function Library() {
       return matchText && matchCat;
     });
   }, [courses, search, category]);
+
+  const visible = useMemo(() => {
+    if (isAdmin || !hideEnrolled) return filtered;
+    return filtered.filter((c) => !enrolledIds.has(String(c._id)));
+  }, [filtered, hideEnrolled, isAdmin, enrolledIds]);
 
   // mutations
   const enrollMutation = useMutation({
@@ -234,7 +240,26 @@ export default function Library() {
               </option>
             ))}
           </Box>
-
+          {!isAdmin && (
+            <HStack spacing={2} align="center">
+              <Box
+                as="label"
+                display="inline-flex"
+                alignItems="center"
+                gap={2}
+                fontSize="sm"
+                color="gray.700"
+              >
+                <Box
+                  as="input"
+                  type="checkbox"
+                  checked={hideEnrolled}
+                  onChange={(e) => setHideEnrolled(e.target.checked)}
+                />
+                Hide enrolled
+              </Box>
+            </HStack>
+          )}
           <Box ml="auto" />
 
           {(isAdmin || isManager) && (
@@ -275,7 +300,7 @@ export default function Library() {
         </Flex>
 
         {/* tiles */}
-        {filtered.length === 0 ? (
+        {visible.length === 0 ? (
           <Box
             p={6}
             textAlign="center"
@@ -292,7 +317,7 @@ export default function Library() {
           </Box>
         ) : (
           <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={5} px={4} py={4}>
-            {filtered.map((course) => {
+            {visible.map((course) => {
               const id = String(course._id);
               const alreadyEnrolled = enrolledIds.has(id);
               const canShowPlus = (isEmployee || isManager) && !alreadyEnrolled;
