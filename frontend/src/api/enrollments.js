@@ -1,12 +1,14 @@
-import api from "./client";
+import api, { ensureCsrf } from "./client";
 
 // self-enroll (employee/manager)
 export async function enrollSelf(courseId) {
+  await ensureCsrf();
   const { data } = await api.post("/api/enrollments/self", { courseId });
   return data; // { message, enrollment }
 }
 
 export async function assignCourse(userId, courseId) {
+  await ensureCsrf();
   const { data } = await api.post("/api/enrollments/assign", {
     userId,
     courseId,
@@ -15,6 +17,7 @@ export async function assignCourse(userId, courseId) {
 }
 
 export async function checkEnrollmentStatus(courseId, userIds) {
+  await ensureCsrf();
   const { data } = await api.post("/api/enrollments/check-status", {
     courseId,
     userIds,
@@ -23,11 +26,13 @@ export async function checkEnrollmentStatus(courseId, userIds) {
 }
 
 export async function fetchEnrollmentsByUser(userId) {
+  await ensureCsrf();
   const { data } = await api.get(`/api/enrollments/by-user/${userId}`);
   return data; // { user, enrollments: [...] }
 }
 
 export async function markCompleted(courseId, completed) {
+  await ensureCsrf();
   const { data } = await api.patch("/api/enrollments/mark-completed", {
     courseId,
     completed,
