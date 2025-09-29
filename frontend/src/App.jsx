@@ -58,7 +58,7 @@ export default function App() {
           >
             <Text fontWeight="bold">Employee Learning & Tracking System</Text>
             <Text>admin@org.com</Text>
-            <Text ml="auto">All Rights Reserved.</Text>
+            <Text ml="auto">Under MIT License.</Text>
           </Flex>
         </Container>
       </Box>
