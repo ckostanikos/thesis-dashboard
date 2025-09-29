@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
+import mongoose from "mongoose";
 
 export async function listUsers(req, res, next) {
   try {
@@ -8,15 +9,16 @@ export async function listUsers(req, res, next) {
     const filter = {};
     if (role) {
       // supports role=employee or role=employee,manager
+      const ALLOWED = new Set(["employee", "manager", "admin", "sysadmin"]);
       const roles = String(role)
         .split(",")
         .map((r) => r.trim().toLowerCase())
-        .filter(Boolean);
-      if (roles.length) filter.role = { $in: roles };
+        .filter((r) => ALLOWED.has(r));
+      if (roles.length)
+        filter.role = roles.length === 1 ? roles[0] : { $in: roles };
     }
-    if (teamId) {
-      filter.teamId = teamId; // exact match; send the ObjectId string
-    }
+    if (teamId) filter.teamId = new mongoose.Types.ObjectId(String(teamId));
+
     if (q && q.trim()) {
       const safe = q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const rx = new RegExp(safe, "i");
@@ -47,7 +49,7 @@ export async function createUser(req, res) {
   } = req.body || {};
   if (!name || !email || !password)
     return res.status(400).json({ message: "name, email, password required" });
-  const exists = await User.findOne({ email });
+  const exists = await User.findOne({ email: (email || "").toLowerCase() });
   if (exists) return res.status(409).json({ message: "Email already in use" });
   const hash = await bcrypt.hash(password, 10);
   const user = await User.create({

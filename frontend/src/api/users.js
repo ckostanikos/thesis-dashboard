@@ -1,11 +1,4 @@
-import api from "./client";
-
-// Admin: get all employees
-export async function fetchEmployeesAdmin() {
-  // Adjust path if your admin route differs
-  const { data } = await api.get("/api/admin/users?role=employee");
-  return data; // [{ _id, name, email, role, teamId }]
-}
+import api, { ensureCsrf } from "./client";
 
 // Manager: get own team members
 export async function fetchTeamMembers(teamId) {
@@ -25,6 +18,7 @@ export async function fetchUsersAdmin({ q = "", role = "", teamId = "" } = {}) {
 
 // Admin: update user
 export async function updateUserAdmin(id, payload) {
+  await ensureCsrf();
   const { data } = await api.patch(`/api/admin/users/${id}`, payload);
   return data;
 }

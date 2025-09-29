@@ -83,18 +83,25 @@ export async function assignCourse(req, res) {
     return res.status(404).json({ message: "Target user not found" });
   if (!course) return res.status(404).json({ message: "Course not found" });
 
-  // Only allows assigning to employees
-  if (targetUser.role !== "employee") {
-    return res
-      .status(400)
-      .json({ message: "Only employees can be assigned courses" });
+  // admin can assign to any user and manager can assign to their own team
+  const actor = req.user;
+  if (targetUser.role === "admin" || targetUser.role === "sysadmin") {
+    return res.status(400).json({ message: "Cannot assign courses to admins" });
   }
-
-  // RBAC: admin unrestricted; manager restricted to own team
-  if (!canManageUser(req.user, targetUser)) {
-    return res
-      .status(403)
-      .json({ message: "Forbidden: cannot assign to this user" });
+  if (targetUser.role === "manager") {
+    if (actor.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Only admins can assign to managers" });
+    }
+  } else if (targetUser.role === "employee") {
+    if (!canManageUser(actor, targetUser)) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: cannot assign to this user" });
+    }
+  } else {
+    return res.status(400).json({ message: "Unsupported target role" });
   }
 
   // 🔒 Duplicate prevention (API-level)

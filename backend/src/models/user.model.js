@@ -29,6 +29,6 @@ userSchema.set("toJSON", {
     return ret;
   },
 });
-userSchema.index({ teamId: 1, role: 1, name: 1 });
+userSchema.index({ teamId: 1, role: 1, name: 1, email: 1 });
 
 export default mongoose.model("User", userSchema);

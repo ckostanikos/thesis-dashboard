@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+.env
+
+public/images/courses/agile_development.jpg
+public/images/courses/cloud_and_it.jpg
+public/images/courses/design_thinking.jpg
+public/images/courses/emerging_tech.jpg
+public/images/courses/introduction_to_business_analytics.jpg
+public/images/courses/time_management_essentials.jpg
+public/images/courses/workplace_compliance.jpg
+public/images/courses/workplace_cybersecurity_basics.jpg
+

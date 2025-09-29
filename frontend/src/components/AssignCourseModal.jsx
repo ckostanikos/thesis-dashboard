@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { fetchCourses } from "../api/courses";
 import { assignCourse, checkEnrollmentStatus } from "../api/enrollments";
-import { fetchEmployeesAdmin, fetchTeamMembers } from "../api/users";
+import { fetchUsersAdmin, fetchTeamMembers } from "../api/users";
 
 export default function AssignCourseModal({ isOpen, onClose }) {
   const qc = useQueryClient();
@@ -41,7 +41,7 @@ export default function AssignCourseModal({ isOpen, onClose }) {
   const usersQ = useQuery({
     queryKey: ["assignable-users", role, teamId],
     queryFn: async () => {
-      if (isAdmin) return fetchEmployeesAdmin();
+      if (isAdmin) return fetchUsersAdmin({ role: "employee , manager" });
       if (isManager && teamId) return fetchTeamMembers(teamId);
       return [];
     },
