@@ -10,7 +10,6 @@ import { errorHandler } from "./middleware/errorHandler.js";
 // routes
 import authRoutes from "./routes/auth.routes.js";
 import meRoutes from "./routes/me.routes.js";
-import kpiRoutes from "./routes/kpi.routes.js";
 import teamRoutes from "./routes/team.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import metaRoutes from "./routes/meta.routes.js";
@@ -84,7 +83,6 @@ app.get("/", (_req, res) => res.send("Server is ready"));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/me", meRoutes);
-app.use("/api/kpis", kpiRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/meta", metaRoutes);
