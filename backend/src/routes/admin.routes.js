@@ -29,4 +29,5 @@ r.get("/metrics/enrollments-by-course", enrollmentsByCourse);
 r.get("/metrics/completion-rate-by-course", completionRateByCourse);
 r.get("/metrics/team-performance", teamPerformance);
 r.get("/metrics/overdue-by-course", overdueByCourse);
+
 export default r;

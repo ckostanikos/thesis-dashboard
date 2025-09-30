@@ -17,6 +17,7 @@ import Users from "./pages/Users";
 import CoursePage from "./pages/CoursePage";
 import Profile from "./pages/Profile";
 
+
 const system = createSystem(defaultConfig);
 
 const router = createBrowserRouter([
